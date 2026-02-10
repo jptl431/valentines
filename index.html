@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Be My Valentine 💘</title>
+  <title>Be My Valentine 💖</title>
   <style>
     body {
       margin: 0;
@@ -12,6 +12,7 @@
       align-items: center;
       justify-content: center;
       font-family: 'Comic Sans MS', 'Arial', sans-serif;
+      overflow: hidden;
     }
 
     .card {
@@ -20,13 +21,21 @@
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      max-width: 400px;
+      max-width: 420px;
       width: 90%;
+      position: relative;
+      z-index: 2;
     }
 
     h1 {
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       color: #ff4d6d;
+    }
+
+    .subtext {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 15px;
     }
 
     img {
@@ -37,7 +46,7 @@
 
     .buttons {
       position: relative;
-      height: 80px;
+      height: 90px;
     }
 
     button {
@@ -68,13 +77,27 @@
       color: #ff4d6d;
       font-size: 22px;
     }
+
+    /* Confetti */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
 
+  <canvas id="confetti"></canvas>
+
   <div class="card">
-    <h1 id="question">Will you be my Valentine? 💘</h1>
-    
+    <h1 id="question">My favorite person, will you be my Valentine? 💖</h1>
+    <div class="subtext" id="subtext">
+      I’m asking very politely. And dramatically.
+    </div>
+
     <img
       id="gif"
       src="https://media.giphy.com/media/v6aOjy0Qo1fIA/giphy.gif"
@@ -92,10 +115,10 @@
     const yesBtn = document.getElementById('yesBtn');
     const gif = document.getElementById('gif');
     const question = document.getElementById('question');
+    const subtext = document.getElementById('subtext');
 
-    // Place No button initially
+    // Move the No button
     moveNoButton();
-
     noBtn.addEventListener('mouseover', moveNoButton);
     noBtn.addEventListener('click', moveNoButton);
 
@@ -107,21 +130,72 @@
       const maxX = containerRect.width - btnRect.width;
       const maxY = containerRect.height - btnRect.height;
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
-
-      noBtn.style.left = `${randomX}px`;
-      noBtn.style.top = `${randomY}px`;
+      noBtn.style.left = `${Math.random() * maxX}px`;
+      noBtn.style.top = `${Math.random() * maxY}px`;
     }
 
+    // Confetti logic
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function createConfetti() {
+      confettiPieces = Array.from({ length: 150 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 40 + 10,
+        color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+        tilt: Math.random() * 10 - 10
+      }));
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, p.r, p.r);
+      });
+      updateConfetti();
+    }
+
+    function updateConfetti() {
+      confettiPieces.forEach(p => {
+        p.y += Math.cos(p.d) + 4;
+        p.x += Math.sin(p.d);
+        if (p.y > canvas.height) {
+          p.y = -10;
+        }
+      });
+    }
+
+    function startConfetti() {
+      createConfetti();
+      const interval = setInterval(drawConfetti, 20);
+      setTimeout(() => clearInterval(interval), 4000);
+    }
+
+    // YES click
     yesBtn.addEventListener('click', () => {
-      question.textContent = "YAY!! I knew you'd say yes 🥰💖";
+      question.textContent = "YAY!! You said YES 🥰💖";
       question.classList.add('celebrate');
+
+      subtext.textContent = "Best Valentine ever. I’m very lucky.";
 
       gif.src = "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif";
 
       noBtn.style.display = "none";
-      yesBtn.textContent = "Best decision ever 💕";
+      yesBtn.textContent = "Officially Valentine 💕";
+
+      startConfetti();
     });
   </script>
 
