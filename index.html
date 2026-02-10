@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Be My Valentine 💘</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Comic Sans MS', 'Arial', sans-serif;
+    }
+
+    .card {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      color: #ff4d6d;
+    }
+
+    img {
+      width: 250px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .buttons {
+      position: relative;
+      height: 80px;
+    }
+
+    button {
+      padding: 12px 22px;
+      font-size: 16px;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    #yesBtn {
+      background-color: #ff4d6d;
+      color: white;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.1);
+    }
+
+    #noBtn {
+      position: absolute;
+      background-color: #ccc;
+      color: #555;
+    }
+
+    .celebrate {
+      color: #ff4d6d;
+      font-size: 22px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 id="question">Will you be my Valentine? 💘</h1>
+    
+    <img
+      id="gif"
+      src="https://media.giphy.com/media/v6aOjy0Qo1fIA/giphy.gif"
+      alt="Begging puppy eyes"
+    />
+
+    <div class="buttons">
+      <button id="yesBtn">Yes 💖</button>
+      <button id="noBtn">No 🙃</button>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+    const gif = document.getElementById('gif');
+    const question = document.getElementById('question');
+
+    // Place No button initially
+    moveNoButton();
+
+    noBtn.addEventListener('mouseover', moveNoButton);
+    noBtn.addEventListener('click', moveNoButton);
+
+    function moveNoButton() {
+      const container = document.querySelector('.buttons');
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = containerRect.width - btnRect.width;
+      const maxY = containerRect.height - btnRect.height;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      noBtn.style.left = `${randomX}px`;
+      noBtn.style.top = `${randomY}px`;
+    }
+
+    yesBtn.addEventListener('click', () => {
+      question.textContent = "YAY!! I knew you'd say yes 🥰💖";
+      question.classList.add('celebrate');
+
+      gif.src = "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif";
+
+      noBtn.style.display = "none";
+      yesBtn.textContent = "Best decision ever 💕";
+    });
+  </script>
+
+</body>
+</html>
